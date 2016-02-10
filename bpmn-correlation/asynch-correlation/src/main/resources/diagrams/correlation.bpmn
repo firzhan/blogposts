@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <message id="startInstance" name="startInstance"></message>
+  <message id="updateRequest" name="updateRequest"></message>
+  <message id="receiveResponse" name="receiveResponse"></message>
+  <message id="startProcess" name="startProcess"></message>
+  <process id="correlation" name="Correlation" isExecutable="true" activiti:candidateStarterUsers="admin2,firzhan@bpmn.com,${user1}" activiti:candidateStarterGroups="admin,${group1},bpmn,grp1">
+    <startEvent id="messagestartevent1" name="Start Instance">
+      <messageEventDefinition messageRef="startProcess"></messageEventDefinition>
+    </startEvent>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <intermediateCatchEvent id="messageintermediatecatchevent1" name="MessageCatchEvent">
+      <messageEventDefinition messageRef="updateRequest"></messageEventDefinition>
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="messageintermediatecatchevent2" name="MessageCatchEvent">
+      <messageEventDefinition messageRef="receiveResponse"></messageEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow1" sourceRef="messagestartevent1" targetRef="parallelgateway1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="parallelgateway1" targetRef="messageintermediatecatchevent1"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="parallelgateway1" targetRef="messageintermediatecatchevent2"></sequenceFlow>
+    <scriptTask id="scripttask1" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>var corrId = execution.getVariable('corrId');
+var requestId = execution.getVariable('requestId');
+var responseId = execution.getVariable('responseId');
+print("***********************************printing the script task after update 1*********************************");
+print("after printing:"+ corrId + ":" + requestId + ":" + responseId );</script>
+    </scriptTask>
+    <sequenceFlow id="flow8" sourceRef="messageintermediatecatchevent1" targetRef="scripttask1"></sequenceFlow>
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow13" sourceRef="scripttask1" targetRef="parallelgateway2"></sequenceFlow>
+    <endEvent id="endevent3" name="End"></endEvent>
+    <sequenceFlow id="flow14" sourceRef="parallelgateway2" targetRef="endevent3"></sequenceFlow>
+    <scriptTask id="scripttask2" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>var corrId = execution.getVariable('corrId');
+var requestId = execution.getVariable('requestId');
+var responseId = execution.getVariable('responseId');
+print("================printing the script task after  Execution============================");
+print("after printing:"+ corrId + ":" + requestId + ":" + responseId )</script>
+    </scriptTask>
+    <sequenceFlow id="flow15" sourceRef="messageintermediatecatchevent2" targetRef="scripttask2"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="scripttask2" targetRef="parallelgateway2"></sequenceFlow>
+    <dataObject id="corrId" name="corrId" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>null</activiti:value>
+      </extensionElements>
+    </dataObject>
+    <dataObject id="requestId" name="requestId" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>null</activiti:value>
+      </extensionElements>
+    </dataObject>
+    <dataObject id="responseId" name="responseId" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>null</activiti:value>
+      </extensionElements>
+    </dataObject>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_correlation">
+    <bpmndi:BPMNPlane bpmnElement="correlation" id="BPMNPlane_correlation">
+      <bpmndi:BPMNShape bpmnElement="messagestartevent1" id="BPMNShape_messagestartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="230.0" y="137.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messageintermediatecatchevent1" id="BPMNShape_messageintermediatecatchevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="360.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messageintermediatecatchevent2" id="BPMNShape_messageintermediatecatchevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="360.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="536.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="820.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="905.0" y="143.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask2" id="BPMNShape_scripttask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="536.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="155.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="157.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="250.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="250.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="227.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="227.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="395.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="536.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="641.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="140.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="860.0" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="905.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="395.0" y="227.0"></omgdi:waypoint>
+        <omgdi:waypoint x="536.0" y="227.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="641.0" y="227.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="227.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
